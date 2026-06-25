@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>代替薬ナビ｜同種同効薬・代替提案</title>
+<style>
+  :root{
+    --ink:#1a2238;
+    --ink-soft:#3d4663;
+    --paper:#f7f5ef;
+    --card:#ffffff;
+    --line:#d9d4c7;
+    --accent:#9c2a2a;
+    --same:#1f6f5c;
+    --similar:#b3801f;
+    --shadow:0 1px 0 rgba(26,34,56,.04), 0 8px 24px -16px rgba(26,34,56,.35);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;background:var(--paper);
+    color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:28px 20px 80px}
+
+  header{border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:22px}
+  .eyebrow{font-size:.72rem;letter-spacing:.32em;color:var(--accent);font-weight:700;
+    font-family:"Hiragino Kaku Gothic ProN",sans-serif}
+  h1{font-size:1.9rem;letter-spacing:.04em;margin:6px 0 4px;font-weight:600}
+  .sub{font-size:.86rem;color:var(--ink-soft);font-family:"Hiragino Kaku Gothic ProN",sans-serif}
+
+  .search-row{display:flex;gap:10px;margin:20px 0 14px;flex-wrap:wrap}
+  #q{flex:1;min-width:220px;font-size:1rem;padding:12px 14px;border:1.5px solid var(--line);
+    background:var(--card);border-radius:2px;color:var(--ink);
+    font-family:"Hiragino Kaku Gothic ProN",sans-serif}
+  #q:focus{outline:none;border-color:var(--accent)}
+
+  .tree{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+  .chip{font-family:"Hiragino Kaku Gothic ProN",sans-serif;font-size:.78rem;padding:6px 13px;
+    border:1.2px solid var(--line);background:var(--card);border-radius:100px;cursor:pointer;
+    color:var(--ink-soft);transition:.15s;white-space:nowrap}
+  .chip:hover{border-color:var(--ink-soft)}
+  .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+  .count{font-family:"Hiragino Kaku Gothic ProN",sans-serif;font-size:.76rem;
+    color:var(--ink-soft);margin:18px 2px 8px}
+
+  .group{margin-bottom:30px}
+  .group-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+    border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:12px}
+  .group-name{font-size:1.15rem;font-weight:600;letter-spacing:.03em}
+  .group-moa{font-family:"Hiragino Kaku Gothic ProN",sans-serif;font-size:.74rem;
+    color:var(--accent);font-weight:700}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+  .card{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--ink-soft);
+    border-radius:2px;padding:9px 12px;box-shadow:var(--shadow);cursor:pointer;
+    transition:.15s;text-align:left;width:100%;font-family:inherit;color:inherit}
+  .card:hover{border-left-color:var(--accent);transform:translateY(-1px);
+    box-shadow:0 1px 0 rgba(26,34,56,.04), 0 12px 28px -16px rgba(26,34,56,.45)}
+  .card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .card .cue{font-family:"Hiragino Kaku Gothic ProN",sans-serif;font-size:.66rem;
+    color:var(--accent);margin-top:6px;opacity:0;transition:.15s}
+  .card:hover .cue,.card:focus-visible .cue{opacity:1}
+
+  .ingredient{font-size:1rem;font-weight:600;letter-spacing:.02em;line-height:1.35}
+  .cat-label{font-family:"Hiragino Kaku Gothic ProN",sans-serif;font-size:.64rem;
+    color:var(--accent);letter-spacing:.03em;margin-top:1px}
+  .name-row{padding-bottom:6px;margin-bottom:6px;border-bottom:1px dotted var(--line)}
+
+  .products{list-style:none}
+  .products li{display:flex;align-items:baseline;gap:7px;padding:2px 0;
+    font-family:"Hiragino Kaku Gothic ProN",sans-serif;font-size:.8rem}
+  .kind{flex:none;font-size:.62rem;font-weight:700;padding:1px 6px;border-radius:3px;letter-spacing:.03em}
+  .kind.brand{background:#f3efe5;color:var(--similar)}
+  .pname{color:var(--ink)}
+
+  .empty{font-family:"Hiragino Kaku Gothic ProN",sans-serif;color:var(--ink-soft);
+    padding:30px 0;text-align:center;font-size:.9rem}
+
+  .back{font-family:"Hiragino Kaku Gothic ProN",sans-serif;font-size:.82rem;
+    background:none;border:none;color:var(--accent);cursor:pointer;padding:6px 0;
+    margin-bottom:14px;display:inline-flex;align-items:center;gap:6px}
+  .back:hover{text-decoration:underline}
+  .back:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+
+  .selected{background:var(--ink);color:#fff;border-radius:3px;padding:16px 18px;margin-bottom:8px}
+  .selected .lead{font-family:"Hiragino Kaku Gothic ProN",sans-serif;font-size:.7rem;
+    letter-spacing:.2em;opacity:.7}
+  .selected .sel-name{font-size:1.4rem;font-weight:600;margin-top:4px;letter-spacing:.03em}
+  .selected .sel-meta{font-family:"Hiragino Kaku Gothic ProN",sans-serif;font-size:.76rem;
+    opacity:.85;margin-top:4px}
+  .selected .sel-products{font-family:"Hiragino Kaku Gothic ProN",sans-serif;font-size:.76rem;
+    opacity:.85;margin-top:6px}
+
+  .alt-head{font-family:"Hiragino Kaku Gothic ProN",sans-serif;font-size:.8rem;
+    color:var(--ink-soft);margin:20px 2px 12px;font-weight:700;letter-spacing:.05em}
+  .alt-head .moa{color:var(--accent);font-weight:700}
+
+  .caution{background:#f6ebe9;border-left:3px solid var(--accent);border-radius:2px;
+    padding:10px 13px;margin:16px 0;font-family:"Hiragino Kaku Gothic ProN",sans-serif;
+    font-size:.74rem;color:var(--ink-soft);line-height:1.7}
+  .caution b{color:var(--accent)}
+
+  footer{margin-top:50px;border-top:1px solid var(--line);padding-top:14px;
+    font-family:"Hiragino Kaku Gothic ProN",sans-serif;font-size:.72rem;color:var(--ink-soft)}
+  footer b{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">同種同効薬 ・ 代替提案ナビ</div>
+    <h1>代替薬ナビ</h1>
+    <div class="sub">薬効分類から同種同効薬をたどり、代替候補を成分単位で素早く確認</div>
+  </header>
+
+  <div id="browse">
+    <div class="search-row">
+      <input id="q" type="text" placeholder="薬剤名・一般名で検索（例：タケキャブ、アムロジピン）" autocomplete="off">
+    </div>
+    <div class="count" id="count"></div>
+    <div id="results"></div>
+  </div>
+
+  <div id="detail" style="display:none"></div>
+
+  <footer>
+    <b>注意</b>　本ツールは薬効分類に基づく代替候補の参照を目的とした参考情報です。実際の変更可否・用量換算（力価）・適応・相互作用は最新の添付文書・ガイドライン・処方医への確認に基づき判断してください。
+  </footer>
+</div>
+
+<script>
+/* 1成分=1ボックス、品目は先発名のみ表示。表示は成分名の五十音順。 */
+const GROUPS = [
+  {
+    id:"pcab", name:"P-CAB", moa:"カリウムイオン競合型アシッドブロッカー",
+    ingredients:[
+      {name:"ボノプラザン", kana:"ほのふらさん", forms:["錠","OD錠"],
+        products:[{name:"タケキャブ",kind:"brand"},{name:"ボノプラザン錠「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"ppi", name:"PPI（プロトンポンプ阻害薬）", moa:"H+/K+-ATPase 阻害",
+    ingredients:[
+      {name:"エソメプラゾール", kana:"えそめふらそおる", forms:["カプセル","懸濁用顆粒分包"],
+        products:[{name:"ネキシウム",kind:"brand"},{name:"エソメプラゾールCp「各社」",kind:"ge"}]},
+      {name:"オメプラゾール", kana:"おめふらそおる", forms:["錠"],
+        products:[{name:"オメプラール／オメプラゾン",kind:"brand"},{name:"オメプラゾール錠「各社」",kind:"ge"}]},
+      {name:"ラベプラゾール", kana:"らへふらそおる", forms:["錠"],
+        products:[{name:"パリエット",kind:"brand"},{name:"ラベプラゾールNa錠「各社」",kind:"ge"}]},
+      {name:"ランソプラゾール", kana:"らんそふらそおる", forms:["カプセル","OD錠"],
+        products:[{name:"タケプロン",kind:"brand"},{name:"ランソプラゾールOD錠「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"h2", name:"H2受容体拮抗薬", moa:"ヒスタミンH2受容体遮断",
+    ingredients:[
+      {name:"ニザチジン", kana:"にさちしん", forms:["錠","カプセル"],
+        products:[{name:"アシノン",kind:"brand"},{name:"ニザチジンCp「各社」",kind:"ge"}]},
+      {name:"ファモチジン", kana:"ふあもちしん", forms:["錠","OD錠","散"],
+        products:[{name:"ガスター",kind:"brand"},{name:"ファモチジン錠「各社」",kind:"ge"}]},
+      {name:"ラフチジン", kana:"らふちしん", forms:["錠","OD錠"],
+        products:[{name:"プロテカジン",kind:"brand"},{name:"ラフチジン錠「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"antiallergy", name:"抗アレルギー薬（第2世代抗ヒスタミン）", moa:"H1受容体拮抗（非鎮静性）",
+    ingredients:[
+      {name:"エピナスチン", kana:"えひなすちん", forms:["錠"],
+        products:[{name:"アレジオン",kind:"brand"},{name:"エピナスチン錠「各社」",kind:"ge"}]},
+      {name:"オロパタジン", kana:"おろはたしん", forms:["錠","OD錠"],
+        products:[{name:"アレロック",kind:"brand"},{name:"オロパタジン錠「各社」",kind:"ge"}]},
+      {name:"セチリジン", kana:"せちりしん", forms:["錠"],
+        products:[{name:"ジルテック",kind:"brand"},{name:"セチリジン錠「各社」",kind:"ge"}]},
+      {name:"デスロラタジン", kana:"てするらたしん", forms:["錠"],
+        products:[{name:"デザレックス",kind:"brand"}]},
+      {name:"フェキソフェナジン", kana:"ふえきそふえなしん", forms:["錠","OD錠"],
+        products:[{name:"アレグラ",kind:"brand"},{name:"フェキソフェナジン錠「各社」",kind:"ge"}]},
+      {name:"ビラスチン", kana:"ひらすちん", forms:["錠","OD錠"],
+        products:[{name:"ビラノア",kind:"brand"}]},
+      {name:"ベポタスチン", kana:"へほたすちん", forms:["錠","OD錠"],
+        products:[{name:"タリオン",kind:"brand"},{name:"ベポタスチン錠「各社」",kind:"ge"}]},
+      {name:"レボセチリジン", kana:"れほせちりしん", forms:["錠","シロップ"],
+        products:[{name:"ザイザル",kind:"brand"},{name:"レボセチリジン錠「各社」",kind:"ge"}]},
+      {name:"ロラタジン", kana:"るらたしん", forms:["錠","OD錠"],
+        products:[{name:"クラリチン",kind:"brand"},{name:"ロラタジン錠「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"arb", name:"降圧薬：ARB（アンジオテンシンII受容体拮抗薬）", moa:"AT1受容体遮断",
+    ingredients:[
+      {name:"アジルサルタン", kana:"あしるさるたん", forms:["錠"],
+        products:[{name:"アジルバ",kind:"brand"}]},
+      {name:"イルベサルタン", kana:"いるへさるたん", forms:["錠"],
+        products:[{name:"アバプロ／イルベタン",kind:"brand"},{name:"イルベサルタン錠「各社」",kind:"ge"}]},
+      {name:"オルメサルタン", kana:"おるめさるたん", forms:["錠","OD錠"],
+        products:[{name:"オルメテック",kind:"brand"},{name:"オルメサルタン錠「各社」",kind:"ge"}]},
+      {name:"カンデサルタン", kana:"かんてさるたん", forms:["錠"],
+        products:[{name:"ブロプレス",kind:"brand"},{name:"カンデサルタン錠「各社」",kind:"ge"}]},
+      {name:"テルミサルタン", kana:"てるみさるたん", forms:["錠"],
+        products:[{name:"ミカルディス",kind:"brand"},{name:"テルミサルタン錠「各社」",kind:"ge"}]},
+      {name:"バルサルタン", kana:"はるさるたん", forms:["錠"],
+        products:[{name:"ディオバン",kind:"brand"},{name:"バルサルタン錠「各社」",kind:"ge"}]},
+      {name:"ロサルタン", kana:"るさるたん", forms:["錠"],
+        products:[{name:"ニューロタン",kind:"brand"},{name:"ロサルタンK錠「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"ccb", name:"降圧薬：Ca拮抗薬（ジヒドロピリジン系）", moa:"L型Caチャネル遮断",
+    ingredients:[
+      {name:"アムロジピン", kana:"あむろちひん", forms:["錠","OD錠"],
+        products:[{name:"アムロジン／ノルバスク",kind:"brand"},{name:"アムロジピン錠「各社」",kind:"ge"}]},
+      {name:"シルニジピン", kana:"しるにちひん", forms:["錠"],
+        products:[{name:"アテレック",kind:"brand"},{name:"シルニジピン錠「各社」",kind:"ge"}]},
+      {name:"ニフェジピン", kana:"にふえちひん", forms:["徐放錠（CR/L）"],
+        products:[{name:"アダラートCR",kind:"brand"},{name:"ニフェジピンCR錠「各社」",kind:"ge"}]},
+      {name:"ベニジピン", kana:"へにちひん", forms:["錠"],
+        products:[{name:"コニール",kind:"brand"},{name:"ベニジピン錠「各社」",kind:"ge"}]},
+      {name:"アゼルニジピン", kana:"あせるにちひん", forms:["錠"],
+        products:[{name:"カルブロック",kind:"brand"},{name:"アゼルニジピン錠「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"acei", name:"降圧薬：ACE阻害薬", moa:"アンジオテンシン変換酵素阻害",
+    ingredients:[
+      {name:"イミダプリル", kana:"いみたふりる", forms:["錠"],
+        products:[{name:"タナトリル",kind:"brand"},{name:"イミダプリル錠「各社」",kind:"ge"}]},
+      {name:"エナラプリル", kana:"えならふりる", forms:["錠"],
+        products:[{name:"レニベース",kind:"brand"},{name:"エナラプリル錠「各社」",kind:"ge"}]},
+      {name:"ペリンドプリル", kana:"へりんとふりる", forms:["錠"],
+        products:[{name:"コバシル",kind:"brand"},{name:"ペリンドプリル錠「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"statin", name:"スタチン（HMG-CoA還元酵素阻害薬）", moa:"HMG-CoA還元酵素阻害",
+    ingredients:[
+      {name:"アトルバスタチン", kana:"あとるはすたちん", forms:["錠"],
+        products:[{name:"リピトール",kind:"brand"},{name:"アトルバスタチン錠「各社」",kind:"ge"}]},
+      {name:"ピタバスタチン", kana:"ひたはすたちん", forms:["錠","OD錠"],
+        products:[{name:"リバロ",kind:"brand"},{name:"ピタバスタチン錠「各社」",kind:"ge"}]},
+      {name:"プラバスタチン", kana:"ふらはすたちん", forms:["錠"],
+        products:[{name:"メバロチン",kind:"brand"},{name:"プラバスタチン錠「各社」",kind:"ge"}]},
+      {name:"ロスバスタチン", kana:"ろすはすたちん", forms:["錠","OD錠"],
+        products:[{name:"クレストール",kind:"brand"},{name:"ロスバスタチン錠「各社」",kind:"ge"}]},
+      {name:"シンバスタチン", kana:"しんはすたちん", forms:["錠"],
+        products:[{name:"リポバス",kind:"brand"},{name:"シンバスタチン錠「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"ssrisnri", name:"SSRI／SNRI（抗うつ薬）", moa:"セロトニン（・ノルアドレナリン）再取り込み阻害",
+    ingredients:[
+      {name:"エスシタロプラム", kana:"えすしたろふらむ", forms:["錠"],
+        products:[{name:"レクサプロ",kind:"brand"},{name:"エスシタロプラム錠「各社」",kind:"ge"}]},
+      {name:"セルトラリン", kana:"せるとらりん", forms:["錠","OD錠"],
+        products:[{name:"ジェイゾロフト",kind:"brand"},{name:"セルトラリン錠「各社」",kind:"ge"}]},
+      {name:"パロキセチン", kana:"はろきせちん", forms:["錠","CR錠"],
+        products:[{name:"パキシル",kind:"brand"},{name:"パロキセチン錠「各社」",kind:"ge"}]},
+      {name:"フルボキサミン", kana:"ふるほきさみん", forms:["錠"],
+        products:[{name:"ルボックス／デプロメール",kind:"brand"},{name:"フルボキサミン錠「各社」",kind:"ge"}]},
+      {name:"デュロキセチン", kana:"てゆろきせちん", forms:["カプセル"],
+        products:[{name:"サインバルタ",kind:"brand"},{name:"デュロキセチンCp「各社」",kind:"ge"}]},
+      {name:"ベンラファキシン", kana:"へんらふあきしん", forms:["徐放カプセル"],
+        products:[{name:"イフェクサーSR",kind:"brand"}]},
+      {name:"ミルナシプラン", kana:"みるなしふらん", forms:["錠"],
+        products:[{name:"トレドミン",kind:"brand"},{name:"ミルナシプラン錠「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"dpp4", name:"経口糖尿病薬：DPP-4阻害薬", moa:"DPP-4阻害（インクレチン分解抑制）",
+    ingredients:[
+      {name:"アナグリプチン", kana:"あなくりふちん", forms:["錠"],
+        products:[{name:"スイニー",kind:"brand"}]},
+      {name:"シタグリプチン", kana:"したくりふちん", forms:["錠"],
+        products:[{name:"ジャヌビア／グラクティブ",kind:"brand"},{name:"シタグリプチン錠「各社」",kind:"ge"}]},
+      {name:"テネリグリプチン", kana:"てねりくりふちん", forms:["錠","OD錠"],
+        products:[{name:"テネリア",kind:"brand"},{name:"テネリグリプチン錠「各社」",kind:"ge"}]},
+      {name:"ビルダグリプチン", kana:"ひるたくりふちん", forms:["錠"],
+        products:[{name:"エクア",kind:"brand"},{name:"ビルダグリプチン錠「各社」",kind:"ge"}]},
+      {name:"リナグリプチン", kana:"りなくりふちん", forms:["錠"],
+        products:[{name:"トラゼンタ",kind:"brand"}]},
+      {name:"アログリプチン", kana:"あろくりふちん", forms:["錠"],
+        products:[{name:"ネシーナ",kind:"brand"},{name:"アログリプチン錠「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"sglt2", name:"経口糖尿病薬：SGLT2阻害薬", moa:"近位尿細管SGLT2阻害（尿糖排泄促進）",
+    ingredients:[
+      {name:"イプラグリフロジン", kana:"いふらくりふろしん", forms:["錠"],
+        products:[{name:"スーグラ",kind:"brand"},{name:"イプラグリフロジン錠「各社」",kind:"ge"}]},
+      {name:"エンパグリフロジン", kana:"えんはくりふろしん", forms:["錠"],
+        products:[{name:"ジャディアンス",kind:"brand"}]},
+      {name:"ダパグリフロジン", kana:"たはくりふろしん", forms:["錠"],
+        products:[{name:"フォシーガ",kind:"brand"}]},
+      {name:"カナグリフロジン", kana:"かなくりふろしん", forms:["錠"],
+        products:[{name:"カナグル",kind:"brand"}]},
+      {name:"ルセオグリフロジン", kana:"るせおくりふろしん", forms:["錠"],
+        products:[{name:"ルセフィ",kind:"brand"}]},
+    ]
+  },
+  {
+    id:"su", name:"経口糖尿病薬：SU薬（スルホニル尿素）", moa:"膵β細胞SU受容体刺激（インスリン分泌促進）",
+    ingredients:[
+      {name:"グリクラジド", kana:"くりくらしと", forms:["錠"],
+        products:[{name:"グリミクロン",kind:"brand"},{name:"グリクラジド錠「各社」",kind:"ge"}]},
+      {name:"グリベンクラミド", kana:"くりへんくらみと", forms:["錠"],
+        products:[{name:"オイグルコン／ダオニール",kind:"brand"},{name:"グリベンクラミド錠「各社」",kind:"ge"}]},
+      {name:"グリメピリド", kana:"くりめひりと", forms:["錠","OD錠"],
+        products:[{name:"アマリール",kind:"brand"},{name:"グリメピリド錠「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"glinide", name:"経口糖尿病薬：グリニド（速効型インスリン分泌促進）", moa:"膵β細胞SU受容体刺激（速効・短時間）",
+    ingredients:[
+      {name:"ナテグリニド", kana:"なてくりにと", forms:["錠"],
+        products:[{name:"スターシス／ファスティック",kind:"brand"},{name:"ナテグリニド錠「各社」",kind:"ge"}]},
+      {name:"ミチグリニド", kana:"みちくりにと", forms:["錠","OD錠"],
+        products:[{name:"グルファスト",kind:"brand"},{name:"ミチグリニド錠「各社」",kind:"ge"}]},
+      {name:"レパグリニド", kana:"れはくりにと", forms:["錠"],
+        products:[{name:"シュアポスト",kind:"brand"}]},
+    ]
+  },
+  {
+    id:"bg", name:"経口糖尿病薬：ビグアナイド", moa:"肝糖新生抑制・末梢インスリン感受性改善",
+    ingredients:[
+      {name:"メトホルミン", kana:"めとほるみん", forms:["錠"],
+        products:[{name:"メトグルコ",kind:"brand"},{name:"メトホルミン錠「各社」",kind:"ge"}]},
+      {name:"ブホルミン", kana:"ふほるみん", forms:["錠"],
+        products:[{name:"ジベトス",kind:"brand"}]},
+    ]
+  },
+  {
+    id:"agi", name:"経口糖尿病薬：α-グルコシダーゼ阻害薬", moa:"小腸α-GI阻害（糖質吸収遅延）",
+    ingredients:[
+      {name:"アカルボース", kana:"あかるほおす", forms:["錠","OD錠"],
+        products:[{name:"グルコバイ",kind:"brand"},{name:"アカルボース錠「各社」",kind:"ge"}]},
+      {name:"ボグリボース", kana:"ほくりほおす", forms:["錠","OD錠"],
+        products:[{name:"ベイスン",kind:"brand"},{name:"ボグリボース錠「各社」",kind:"ge"}]},
+      {name:"ミグリトール", kana:"みくりとおる", forms:["錠","OD錠"],
+        products:[{name:"セイブル",kind:"brand"},{name:"ミグリトール錠「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"bzd-hypnotic", name:"睡眠薬：ベンゾジアゼピン系・類似", moa:"GABA-A受容体（BZD結合部位）作動",
+    ingredients:[
+      {name:"ブロチゾラム", kana:"ふろちそらむ", forms:["錠","OD錠"],
+        products:[{name:"レンドルミン",kind:"brand"},{name:"ブロチゾラム錠「各社」",kind:"ge"}]},
+      {name:"トリアゾラム", kana:"とりあそらむ", forms:["錠"],
+        products:[{name:"ハルシオン",kind:"brand"},{name:"トリアゾラム錠「各社」",kind:"ge"}]},
+      {name:"フルニトラゼパム", kana:"ふるにとらせはむ", forms:["錠"],
+        products:[{name:"サイレース",kind:"brand"},{name:"フルニトラゼパム錠「各社」",kind:"ge"}]},
+      {name:"エチゾラム", kana:"えちそらむ", forms:["錠","細粒"],
+        products:[{name:"デパス",kind:"brand"},{name:"エチゾラム錠「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"nonbzd-hypnotic", name:"睡眠薬：非ベンゾ系・新規機序", moa:"Z-drug／オレキシン拮抗／メラトニン作動",
+    ingredients:[
+      {name:"ゾルピデム", kana:"そるひてむ", forms:["錠","OD錠"],
+        products:[{name:"マイスリー",kind:"brand"},{name:"ゾルピデム錠「各社」",kind:"ge"}]},
+      {name:"ゾピクロン", kana:"そひくろん", forms:["錠"],
+        products:[{name:"アモバン",kind:"brand"},{name:"ゾピクロン錠「各社」",kind:"ge"}]},
+      {name:"エスゾピクロン", kana:"えすそひくろん", forms:["錠"],
+        products:[{name:"ルネスタ",kind:"brand"},{name:"エスゾピクロン錠「各社」",kind:"ge"}]},
+      {name:"スボレキサント", kana:"すほれきさんと", forms:["錠"],
+        products:[{name:"ベルソムラ",kind:"brand"}]},
+      {name:"レンボレキサント", kana:"れんほれきさんと", forms:["錠"],
+        products:[{name:"デエビゴ",kind:"brand"}]},
+      {name:"ラメルテオン", kana:"らめるておん", forms:["錠"],
+        products:[{name:"ロゼレム",kind:"brand"}]},
+    ]
+  },
+  {
+    id:"nsaids", name:"NSAIDs（非ステロイド性抗炎症薬・経口）", moa:"COX阻害（プロスタグランジン合成抑制）",
+    ingredients:[
+      {name:"ロキソプロフェン", kana:"ろきそふろふえん", forms:["錠","細粒"],
+        products:[{name:"ロキソニン",kind:"brand"},{name:"ロキソプロフェン錠「各社」",kind:"ge"}]},
+      {name:"セレコキシブ", kana:"せれこきしふ", forms:["錠"],
+        products:[{name:"セレコックス",kind:"brand"},{name:"セレコキシブ錠「各社」",kind:"ge"}]},
+      {name:"ジクロフェナク", kana:"しくろふえなく", forms:["錠","徐放カプセル","坐剤"],
+        products:[{name:"ボルタレン",kind:"brand"},{name:"ジクロフェナクNa錠「各社」",kind:"ge"}]},
+      {name:"イブプロフェン", kana:"いふふろふえん", forms:["錠"],
+        products:[{name:"ブルフェン",kind:"brand"},{name:"イブプロフェン錠「各社」",kind:"ge"}]},
+      {name:"ナプロキセン", kana:"なふろきせん", forms:["錠"],
+        products:[{name:"ナイキサン",kind:"brand"}]},
+      {name:"メロキシカム", kana:"めろきしかむ", forms:["錠"],
+        products:[{name:"モービック",kind:"brand"},{name:"メロキシカム錠「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"acetaminophen", name:"解熱鎮痛：アセトアミノフェン・配合", moa:"中枢性解熱鎮痛（COX関与・末梢抗炎症弱）",
+    ingredients:[
+      {name:"アセトアミノフェン", kana:"あせとあみのふえん", forms:["錠","細粒","シロップ","坐剤"],
+        products:[{name:"カロナール",kind:"brand"},{name:"アセトアミノフェン錠「各社」",kind:"ge"}]},
+      {name:"トラマドール・アセトアミノフェン配合", kana:"とらまとおるはいこう", forms:["配合錠"],
+        products:[{name:"トラムセット",kind:"brand"},{name:"トアラセット配合錠",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"neuropathic", name:"神経障害性疼痛治療薬", moa:"Ca²⁺チャネルα2δ／下行性疼痛抑制系賦活",
+    ingredients:[
+      {name:"プレガバリン", kana:"ふれかはりん", forms:["カプセル","OD錠"],
+        products:[{name:"リリカ",kind:"brand"},{name:"プレガバリンOD錠「各社」",kind:"ge"}]},
+      {name:"ミロガバリン", kana:"みろかはりん", forms:["錠"],
+        products:[{name:"タリージェ",kind:"brand"}]},
+      {name:"デュロキセチン", kana:"てゆろきせちん", forms:["カプセル"],
+        products:[{name:"サインバルタ",kind:"brand"},{name:"デュロキセチンCp「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"ltra", name:"ロイコトリエン受容体拮抗薬（LTRA）", moa:"システイニルロイコトリエン受容体拮抗",
+    ingredients:[
+      {name:"プランルカスト", kana:"ふらんるかすと", forms:["カプセル","ドライシロップ"],
+        products:[{name:"オノン",kind:"brand"},{name:"プランルカストCp「各社」",kind:"ge"}]},
+      {name:"モンテルカスト", kana:"もんてるかすと", forms:["錠","OD錠","チュアブル","細粒"],
+        products:[{name:"シングレア／キプレス",kind:"brand"},{name:"モンテルカスト錠「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"antispasmodic", name:"鎮痙薬（抗コリン）", moa:"消化管平滑筋ムスカリン受容体遮断",
+    ingredients:[
+      {name:"ブチルスコポラミン", kana:"ふちるすこほらみん", forms:["錠","注"],
+        products:[{name:"ブスコパン",kind:"brand"},{name:"ブチルスコポラミン錠「各社」",kind:"ge"}]},
+      {name:"チキジウム", kana:"ちきしうむ", forms:["カプセル"],
+        products:[{name:"チアトン",kind:"brand"},{name:"チキジウムCp「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"xanthine", name:"気管支拡張薬：キサンチン系", moa:"ホスホジエステラーゼ阻害・気管支拡張",
+    ingredients:[
+      {name:"テオフィリン徐放", kana:"ておふいりん", forms:["徐放錠","徐放ドライシロップ"],
+        products:[{name:"テオドール／テオロング",kind:"brand"},{name:"テオフィリン徐放錠「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"ibs", name:"過敏性腸症候群（IBS）治療薬", moa:"消化管内水分保持・便性状調整等",
+    ingredients:[
+      {name:"ポリカルボフィルカルシウム", kana:"ほりかるほふいる", forms:["錠","細粒"],
+        products:[{name:"ポリフル／コロネル",kind:"brand"},{name:"ポリカルボフィルCa錠「各社」",kind:"ge"}]},
+      {name:"ラモセトロン", kana:"らもせとろん", forms:["錠","OD錠"],
+        products:[{name:"イリボー",kind:"brand"},{name:"ラモセトロンOD錠「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"penicillin", name:"抗菌薬：ペニシリン系（経口）", moa:"細胞壁合成阻害（β-ラクタム）",
+    ingredients:[
+      {name:"アモキシシリン", kana:"あもきししりん", forms:["カプセル","錠","細粒"],
+        products:[{name:"サワシリン／パセトシン",kind:"brand"},{name:"アモキシシリンCp「各社」",kind:"ge"}]},
+      {name:"アモキシシリン・クラブラン酸配合", kana:"あもきししりんくらふらん", forms:["配合錠"],
+        products:[{name:"オーグメンチン／クラバモックス",kind:"brand"},{name:"アモキシシリン・クラブラン酸配合錠「各社」",kind:"ge"}]},
+      {name:"アンピシリン", kana:"あんひしりん", forms:["カプセル","錠"],
+        products:[{name:"ビクシリン",kind:"brand"}]},
+    ]
+  },
+  {
+    id:"cephem", name:"抗菌薬：セフェム系（経口）", moa:"細胞壁合成阻害（β-ラクタム）",
+    ingredients:[
+      {name:"セファレキシン", kana:"せふあれきしん", forms:["カプセル","錠","シロップ"],
+        products:[{name:"ケフレックス",kind:"brand"},{name:"セファレキシンCp「各社」",kind:"ge"}]},
+      {name:"セフカペンピボキシル", kana:"せふかへん", forms:["錠","細粒"],
+        products:[{name:"フロモックス",kind:"brand"},{name:"セフカペンピボキシル錠「各社」",kind:"ge"}]},
+      {name:"セフジトレンピボキシル", kana:"せふしとれん", forms:["錠","細粒"],
+        products:[{name:"メイアクトMS",kind:"brand"},{name:"セフジトレンピボキシル錠「各社」",kind:"ge"}]},
+      {name:"セフジニル", kana:"せふしにる", forms:["カプセル","細粒"],
+        products:[{name:"セフゾン",kind:"brand"},{name:"セフジニルCp「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"macrolide", name:"抗菌薬：マクロライド系（経口）", moa:"50Sリボソーム結合・蛋白合成阻害",
+    ingredients:[
+      {name:"クラリスロマイシン", kana:"くらりすろまいしん", forms:["錠","DS"],
+        products:[{name:"クラリス／クラリシッド",kind:"brand"},{name:"クラリスロマイシン錠「各社」",kind:"ge"}]},
+      {name:"アジスロマイシン", kana:"あしすろまいしん", forms:["錠","細粒","カプセル"],
+        products:[{name:"ジスロマック",kind:"brand"},{name:"アジスロマイシン錠「各社」",kind:"ge"}]},
+      {name:"エリスロマイシン", kana:"えりすろまいしん", forms:["錠","DS"],
+        products:[{name:"エリスロシン",kind:"brand"}]},
+    ]
+  },
+  {
+    id:"quinolone", name:"抗菌薬：キノロン系（経口）", moa:"DNAジャイレース／トポイソメラーゼ阻害",
+    ingredients:[
+      {name:"レボフロキサシン", kana:"れほふろきさしん", forms:["錠","細粒"],
+        products:[{name:"クラビット",kind:"brand"},{name:"レボフロキサシン錠「各社」",kind:"ge"}]},
+      {name:"シプロフロキサシン", kana:"しふろふろきさしん", forms:["錠"],
+        products:[{name:"シプロキサン",kind:"brand"},{name:"シプロフロキサシン錠「各社」",kind:"ge"}]},
+      {name:"ガレノキサシン", kana:"かれのきさしん", forms:["錠"],
+        products:[{name:"ジェニナック",kind:"brand"}]},
+      {name:"シタフロキサシン", kana:"したふろきさしん", forms:["錠","細粒"],
+        products:[{name:"グレースビット",kind:"brand"}]},
+      {name:"トスフロキサシン", kana:"とすふろきさしん", forms:["錠","細粒"],
+        products:[{name:"オゼックス",kind:"brand"},{name:"トスフロキサシン錠「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"tetracycline", name:"抗菌薬：テトラサイクリン系（経口）", moa:"30Sリボソーム結合・蛋白合成阻害",
+    ingredients:[
+      {name:"ミノサイクリン", kana:"みのさいくりん", forms:["錠","カプセル","顆粒"],
+        products:[{name:"ミノマイシン",kind:"brand"},{name:"ミノサイクリン錠「各社」",kind:"ge"}]},
+      {name:"ドキシサイクリン", kana:"ときしさいくりん", forms:["錠"],
+        products:[{name:"ビブラマイシン",kind:"brand"}]},
+    ]
+  },
+  {
+    id:"expectorant", name:"去痰薬", moa:"気道粘液調整・粘液溶解・線毛運動促進",
+    ingredients:[
+      {name:"カルボシステイン", kana:"かるほしすていん", forms:["錠","シロップ","DS"],
+        products:[{name:"ムコダイン",kind:"brand"},{name:"カルボシステイン錠「各社」",kind:"ge"}]},
+      {name:"アンブロキソール", kana:"あんふろきそおる", forms:["錠","徐放カプセル","内用液","DS"],
+        products:[{name:"ムコソルバン",kind:"brand"},{name:"アンブロキソール錠「各社」",kind:"ge"}]},
+      {name:"ブロムヘキシン", kana:"ふろむへきしん", forms:["錠","細粒","吸入液"],
+        products:[{name:"ビソルボン",kind:"brand"},{name:"ブロムヘキシン錠「各社」",kind:"ge"}]},
+      {name:"フドステイン", kana:"ふとすていん", forms:["錠","内用液"],
+        products:[{name:"クリアナール／スペリア",kind:"brand"},{name:"フドステイン錠「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"thiazide", name:"利尿薬：チアジド系・類似", moa:"遠位尿細管Na-Cl共輸送体阻害",
+    ingredients:[
+      {name:"ヒドロクロロチアジド", kana:"ひとろくろろちあしと", forms:["錠"],
+        products:[{name:"ヒドロクロロチアジド錠",kind:"brand"},{name:"ヒドロクロロチアジド錠「各社」",kind:"ge"}]},
+      {name:"トリクロルメチアジド", kana:"とりくろるめちあしと", forms:["錠"],
+        products:[{name:"フルイトラン",kind:"brand"},{name:"トリクロルメチアジド錠「各社」",kind:"ge"}]},
+      {name:"インダパミド", kana:"いんたはみと", forms:["錠"],
+        products:[{name:"ナトリックス／テナキシル",kind:"brand"},{name:"インダパミド錠「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"loop", name:"利尿薬：ループ利尿薬", moa:"ヘンレ係蹄上行脚Na-K-2Cl共輸送体阻害",
+    ingredients:[
+      {name:"フロセミド", kana:"ふろせみと", forms:["錠","細粒","注"],
+        products:[{name:"ラシックス",kind:"brand"},{name:"フロセミド錠「各社」",kind:"ge"}]},
+      {name:"アゾセミド", kana:"あそせみと", forms:["錠"],
+        products:[{name:"ダイアート",kind:"brand"},{name:"アゾセミド錠「各社」",kind:"ge"}]},
+      {name:"トラセミド", kana:"とらせみと", forms:["錠","OD錠"],
+        products:[{name:"ルプラック",kind:"brand"},{name:"トラセミド錠「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"kspare", name:"利尿薬：K保持性・MR拮抗薬", moa:"アルドステロン（鉱質コルチコイド）受容体拮抗",
+    ingredients:[
+      {name:"スピロノラクトン", kana:"すひろのらくとん", forms:["錠","細粒"],
+        products:[{name:"アルダクトンA",kind:"brand"},{name:"スピロノラクトン錠「各社」",kind:"ge"}]},
+      {name:"エプレレノン", kana:"えふれれのん", forms:["錠"],
+        products:[{name:"セララ",kind:"brand"},{name:"エプレレノン錠「各社」",kind:"ge"}]},
+      {name:"エサキセレノン", kana:"えさきせれのん", forms:["錠"],
+        products:[{name:"ミネブロ",kind:"brand"}]},
+    ]
+  },
+  {
+    id:"betablocker", name:"β遮断薬（α/β含む）", moa:"β（一部α₁併用）アドレナリン受容体遮断",
+    ingredients:[
+      {name:"ビソプロロール", kana:"ひそふろろおる", forms:["錠","貼付"],
+        products:[{name:"メインテート",kind:"brand"},{name:"ビソプロロール錠「各社」",kind:"ge"}]},
+      {name:"カルベジロール", kana:"かるへしろおる", forms:["錠"],
+        products:[{name:"アーチスト",kind:"brand"},{name:"カルベジロール錠「各社」",kind:"ge"}]},
+      {name:"メトプロロール", kana:"めとふろろおる", forms:["錠"],
+        products:[{name:"セロケン／ロプレソール",kind:"brand"},{name:"メトプロロール錠「各社」",kind:"ge"}]},
+      {name:"アテノロール", kana:"あてのろおる", forms:["錠"],
+        products:[{name:"テノーミン",kind:"brand"},{name:"アテノロール錠「各社」",kind:"ge"}]},
+      {name:"プロプラノロール", kana:"ふろふらのろおる", forms:["錠"],
+        products:[{name:"インデラル",kind:"brand"},{name:"プロプラノロール錠「各社」",kind:"ge"}]},
+      {name:"アロチノロール", kana:"あろちのろおる", forms:["錠"],
+        products:[{name:"アロチノロール塩酸塩錠",kind:"brand"},{name:"アロチノロール錠「各社」",kind:"ge"}]},
+    ]
+  },
+];
+
+// 各グループ内を五十音順（kana）でソート
+GROUPS.forEach(g=>g.ingredients.sort((a,b)=>a.kana.localeCompare(b.kana,"ja")));
+
+let activeGroup = "all";
+let query = "";
+
+const resultsEl = document.getElementById("results");
+const countEl = document.getElementById("count");
+const qEl = document.getElementById("q");
+const browseEl = document.getElementById("browse");
+const detailEl = document.getElementById("detail");
+
+function matchesQuery(ing){
+  if(!query) return true;
+  const q = query.toLowerCase();
+  if(ing.name.toLowerCase().includes(q)) return true;
+  return ing.products.some(p=>p.name.toLowerCase().includes(q));
+}
+
+function brandProducts(ing){ return ing.products.filter(p=>p.kind==="brand"); }
+function productsLine(ing){ return brandProducts(ing).map(p=>`先発：${p.name}`).join("／"); }
+
+function ingredientCardInner(ing, catLabel){
+  return `<div class="name-row">
+      <div class="ingredient">${ing.name}</div>
+      ${catLabel?`<div class="cat-label">${catLabel}</div>`:""}
+    </div>
+    <ul class="products">
+      ${brandProducts(ing).map(p=>`<li>
+        <span class="kind brand">先発</span><span class="pname">${p.name}</span>
+      </li>`).join("")}
+    </ul>`;
+}
+
+function shortCat(name){
+  // チップ用の短い分類名（カードに添えるラベル）
+  return name.replace(/（.*?）/g,"").replace(/^降圧薬：/,"").replace(/^経口糖尿病薬：/,"");
+}
+
+function render(){
+  let html = "", total = 0;
+
+  if(activeGroup === "all"){
+    // 全成分を五十音順でフラット表示
+    const flat = [];
+    GROUPS.forEach(g=>{
+      g.ingredients.forEach(ing=>{
+        if(matchesQuery(ing)) flat.push({ing, group:g});
+      });
+    });
+    flat.sort((a,b)=>a.ing.kana.localeCompare(b.ing.kana,"ja"));
+    total = flat.length;
+    if(total>0){
+      html = `<div class="grid">` + flat.map(({ing,group})=>
+        `<button class="card" data-group="${group.id}" data-ing="${ing.name}"
+            aria-label="${ing.name}の代替候補を見る">
+          ${ingredientCardInner(ing, shortCat(group.name))}
+          <div class="cue">→ この成分の代替候補を見る</div>
+        </button>`
+      ).join("") + `</div>`;
+    }
+  }else{
+    // 特定分類：見出し+作用機序つき
+    const g = GROUPS.find(x=>x.id===activeGroup);
+    const ings = g.ingredients.filter(matchesQuery);
+    total = ings.length;
+    if(total>0){
+      html = `<div class="group">
+        <div class="group-head">
+          <span class="group-name">${g.name}</span>
+          <span class="group-moa">作用機序：${g.moa}</span>
+        </div>
+        <div class="grid">` +
+        ings.map(ing=>
+          `<button class="card" data-group="${g.id}" data-ing="${ing.name}"
+              aria-label="${ing.name}の代替候補を見る">
+            ${ingredientCardInner(ing)}
+            <div class="cue">→ この成分の代替候補を見る</div>
+          </button>`
+        ).join("") + `</div></div>`;
+    }
+  }
+
+  if(total===0){
+    resultsEl.innerHTML = `<div class="empty">該当する薬剤が見つかりません。検索語または分類を変更してください。</div>`;
+    countEl.textContent = "";
+  }else{
+    resultsEl.innerHTML = html;
+    countEl.textContent = `${total} 成分の候補`;
+    resultsEl.querySelectorAll(".card").forEach(c=>{
+      c.addEventListener("click",()=>showDetail(c.dataset.group, c.dataset.ing));
+    });
+  }
+}
+
+function showDetail(groupId, ingName){
+  const group = GROUPS.find(g=>g.id===groupId);
+  const sel = group.ingredients.find(i=>i.name===ingName);
+  const alts = group.ingredients.filter(i=>i.name!==ingName); // 既に五十音順
+
+  let altHtml;
+  if(alts.length===0){
+    altHtml = `<div class="empty">同分類内に他の代替成分が登録されていません。<br>別の薬効分類・上位の治療目標に基づく検討が必要です。</div>`;
+  }else{
+    altHtml = `<div class="grid">` + alts.map(ing=>
+      `<div class="card" style="cursor:default">${ingredientCardInner(ing)}</div>`
+    ).join("") + `</div>`;
+  }
+
+  detailEl.innerHTML = `
+    <button class="back" id="backBtn" aria-label="一覧に戻る">← 一覧に戻る</button>
+    <div class="selected">
+      <div class="lead">この成分が使えないとき</div>
+      <div class="sel-name">${sel.name}</div>
+      <div class="sel-meta">${group.name}</div>
+      <div class="sel-products">${productsLine(sel)}</div>
+    </div>
+    <div class="alt-head">同分類の代替候補（五十音順）　<span class="moa">作用機序：${group.moa}</span></div>
+    ${altHtml}
+    <div class="caution">
+      <b>代替時の確認事項</b>　同種同効でも力価（用量換算）・適応症・保険査定・相互作用・剤形（嚥下/簡易懸濁）は成分ごとに異なります。切替の可否と用量は必ず添付文書・ガイドライン・処方医への確認のうえ判断してください。
+    </div>`;
+
+  browseEl.style.display = "none";
+  detailEl.style.display = "block";
+  const back = document.getElementById("backBtn");
+  back.addEventListener("click", showBrowse);
+  back.focus();
+  window.scrollTo({top:0, behavior:"smooth"});
+  document.addEventListener("keydown", escHandler);
+}
+
+function showBrowse(){
+  detailEl.style.display = "none";
+  browseEl.style.display = "block";
+  document.removeEventListener("keydown", escHandler);
+}
+function escHandler(e){ if(e.key==="Escape") showBrowse(); }
+
+qEl.addEventListener("input", e=>{ query = e.target.value.trim(); render(); });
+
+render();
+</script>
+</body>
+</html>
