@@ -561,6 +561,134 @@ const GROUPS = [
         products:[{name:"アロチノロール塩酸塩錠",kind:"brand"},{name:"アロチノロール錠「各社」",kind:"ge"}]},
     ]
   },
+  {
+    id:"antiplatelet", name:"抗血小板薬（経口）", moa:"血小板凝集抑制（COX／P2Y12／PDE等）",
+    ingredients:[
+      {name:"アスピリン（低用量）", kana:"あすひりん", forms:["腸溶錠","配合錠"],
+        products:[{name:"バイアスピリン",kind:"brand"},{name:"アスピリン腸溶錠「各社」",kind:"ge"}]},
+      {name:"クロピドグレル", kana:"くろひとくれる", forms:["錠"],
+        products:[{name:"プラビックス",kind:"brand"},{name:"クロピドグレル錠「各社」",kind:"ge"}]},
+      {name:"プラスグレル", kana:"ふらすくれる", forms:["錠","OD錠"],
+        products:[{name:"エフィエント",kind:"brand"}]},
+      {name:"チカグレロル", kana:"ちかくれろる", forms:["錠"],
+        products:[{name:"ブリリンタ",kind:"brand"}]},
+      {name:"シロスタゾール", kana:"しろすたそおる", forms:["錠","OD錠"],
+        products:[{name:"プレタール",kind:"brand"},{name:"シロスタゾールOD錠「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"doac", name:"抗凝固薬：DOAC（経口）", moa:"直接Xa／トロンビン阻害",
+    ingredients:[
+      {name:"アピキサバン", kana:"あひきさはん", forms:["錠"],
+        products:[{name:"エリキュース",kind:"brand"}]},
+      {name:"リバーロキサバン", kana:"りはあろきさはん", forms:["錠","OD錠","細粒"],
+        products:[{name:"イグザレルト",kind:"brand"}]},
+      {name:"エドキサバン", kana:"えときさはん", forms:["錠","OD錠"],
+        products:[{name:"リクシアナ",kind:"brand"}]},
+      {name:"ダビガトラン", kana:"たひかとらん", forms:["カプセル"],
+        products:[{name:"プラザキサ",kind:"brand"}]},
+    ]
+  },
+  {
+    id:"warfarin", name:"抗凝固薬：ビタミンK拮抗薬", moa:"ビタミンK依存性凝固因子産生抑制",
+    ingredients:[
+      {name:"ワルファリン", kana:"わるふありん", forms:["錠","顆粒"],
+        products:[{name:"ワーファリン",kind:"brand"},{name:"ワルファリンK錠「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"thyroid-replace", name:"甲状腺ホルモン製剤", moa:"甲状腺ホルモン補充",
+    ingredients:[
+      {name:"レボチロキシン", kana:"れほちろきしん", forms:["錠"],
+        products:[{name:"チラーヂンS",kind:"brand"},{name:"レボチロキシンNa錠「各社」",kind:"ge"}]},
+      {name:"リオチロニン", kana:"りおちろにん", forms:["錠"],
+        products:[{name:"チロナミン",kind:"brand"}]},
+    ]
+  },
+  {
+    id:"antithyroid", name:"抗甲状腺薬", moa:"甲状腺ホルモン合成阻害",
+    ingredients:[
+      {name:"チアマゾール", kana:"ちあまそおる", forms:["錠"],
+        products:[{name:"メルカゾール",kind:"brand"}]},
+      {name:"プロピルチオウラシル", kana:"ふろひるちおうらしる", forms:["錠"],
+        products:[{name:"チウラジール／プロパジール",kind:"brand"}]},
+    ]
+  },
+  {
+    id:"bisphosphonate", name:"骨粗鬆症：ビスホスホネート", moa:"破骨細胞活性抑制（骨吸収抑制）",
+    ingredients:[
+      {name:"アレンドロン酸", kana:"あれんとろんさん", forms:["錠","ゼリー","点滴"],
+        products:[{name:"フォサマック／ボナロン",kind:"brand"},{name:"アレンドロン酸錠「各社」",kind:"ge"}]},
+      {name:"リセドロン酸", kana:"りせとろんさん", forms:["錠"],
+        products:[{name:"ベネット／アクトネル",kind:"brand"},{name:"リセドロン酸Na錠「各社」",kind:"ge"}]},
+      {name:"ミノドロン酸", kana:"みのとろんさん", forms:["錠"],
+        products:[{name:"ボノテオ／リカルボン",kind:"brand"},{name:"ミノドロン酸錠「各社」",kind:"ge"}]},
+      {name:"イバンドロン酸", kana:"いはんとろんさん", forms:["錠","静注"],
+        products:[{name:"ボンビバ",kind:"brand"}]},
+    ]
+  },
+  {
+    id:"vitd", name:"骨粗鬆症：活性型ビタミンD₃製剤", moa:"腸管Ca吸収促進・骨代謝調整",
+    ingredients:[
+      {name:"アルファカルシドール", kana:"あるふあかるしとおる", forms:["錠","カプセル","散","内用液"],
+        products:[{name:"アルファロール／ワンアルファ",kind:"brand"},{name:"アルファカルシドールCp「各社」",kind:"ge"}]},
+      {name:"エルデカルシトール", kana:"えるてかるしとおる", forms:["カプセル"],
+        products:[{name:"エディロール",kind:"brand"}]},
+      {name:"カルシトリオール", kana:"かるしとりおおる", forms:["カプセル"],
+        products:[{name:"ロカルトロール",kind:"brand"},{name:"カルシトリオールCp「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"serm", name:"骨粗鬆症：SERM", moa:"骨選択的エストロゲン受容体modulator",
+    ingredients:[
+      {name:"ラロキシフェン", kana:"らろきしふえん", forms:["錠"],
+        products:[{name:"エビスタ",kind:"brand"},{name:"ラロキシフェン錠「各社」",kind:"ge"}]},
+      {name:"バゼドキシフェン", kana:"はせときしふえん", forms:["錠"],
+        products:[{name:"ビビアント",kind:"brand"}]},
+    ]
+  },
+  {
+    id:"urate-lower", name:"高尿酸血症：尿酸生成抑制薬", moa:"キサンチンオキシダーゼ阻害",
+    ingredients:[
+      {name:"アロプリノール", kana:"あろふりのおる", forms:["錠"],
+        products:[{name:"ザイロリック",kind:"brand"},{name:"アロプリノール錠「各社」",kind:"ge"}]},
+      {name:"フェブキソスタット", kana:"ふえふきそすたつと", forms:["錠","OD錠"],
+        products:[{name:"フェブリク",kind:"brand"},{name:"フェブキソスタット錠「各社」",kind:"ge"}]},
+      {name:"トピロキソスタット", kana:"とひろきそすたつと", forms:["錠"],
+        products:[{name:"トピロリック／ウリアデック",kind:"brand"}]},
+    ]
+  },
+  {
+    id:"uricosuric", name:"高尿酸血症：尿酸排泄促進薬", moa:"尿酸トランスポーター（URAT1）阻害",
+    ingredients:[
+      {name:"ベンズブロマロン", kana:"へんすふろまろん", forms:["錠"],
+        products:[{name:"ユリノーム",kind:"brand"},{name:"ベンズブロマロン錠「各社」",kind:"ge"}]},
+      {name:"ドチヌラド", kana:"とちぬらと", forms:["錠"],
+        products:[{name:"ユリス",kind:"brand"}]},
+    ]
+  },
+  {
+    id:"oab-anticholinergic", name:"過活動膀胱：抗コリン薬", moa:"膀胱ムスカリン受容体遮断",
+    ingredients:[
+      {name:"ソリフェナシン", kana:"そりふえなしん", forms:["錠","OD錠"],
+        products:[{name:"ベシケア",kind:"brand"},{name:"ソリフェナシン錠「各社」",kind:"ge"}]},
+      {name:"イミダフェナシン", kana:"いみたふえなしん", forms:["錠","OD錠"],
+        products:[{name:"ウリトス／ステーブラ",kind:"brand"},{name:"イミダフェナシン錠「各社」",kind:"ge"}]},
+      {name:"プロピベリン", kana:"ふろひへりん", forms:["錠"],
+        products:[{name:"バップフォー",kind:"brand"},{name:"プロピベリン錠「各社」",kind:"ge"}]},
+      {name:"フェソテロジン", kana:"ふえそてろしん", forms:["徐放錠"],
+        products:[{name:"トビエース",kind:"brand"}]},
+    ]
+  },
+  {
+    id:"oab-beta3", name:"過活動膀胱：β₃作動薬", moa:"膀胱β₃アドレナリン受容体刺激（排尿筋弛緩）",
+    ingredients:[
+      {name:"ミラベグロン", kana:"みらへくろん", forms:["錠"],
+        products:[{name:"ベタニス",kind:"brand"}]},
+      {name:"ビベグロン", kana:"ひへくろん", forms:["錠"],
+        products:[{name:"ベオーバ",kind:"brand"}]},
+    ]
+  },
 ];
 
 // 各グループ内を五十音順（kana）でソート
