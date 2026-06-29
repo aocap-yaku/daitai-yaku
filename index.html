@@ -689,6 +689,137 @@ const GROUPS = [
         products:[{name:"ベオーバ",kind:"brand"}]},
     ]
   },
+  {
+    id:"laxative-osmotic", name:"便秘薬：浸透圧性・塩類", moa:"腸管内浸透圧上昇・水分保持",
+    ingredients:[
+      {name:"酸化マグネシウム", kana:"さんかまくねしうむ", forms:["錠","細粒","原末"],
+        products:[{name:"マグミット",kind:"brand"},{name:"酸化マグネシウム錠「各社」",kind:"ge"}]},
+      {name:"マクロゴール4000配合", kana:"まくろこおる", forms:["配合内用剤"],
+        products:[{name:"モビコール",kind:"brand"}]},
+      {name:"ラクツロース", kana:"らくつろおす", forms:["シロップ","ゼリー"],
+        products:[{name:"モニラック／ラグノス",kind:"brand"},{name:"ラクツロースシロップ「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"laxative-secretory", name:"便秘薬：上皮機能変容・胆汁酸", moa:"腸管分泌促進・胆汁酸再吸収抑制",
+    ingredients:[
+      {name:"ルビプロストン", kana:"るひふろすとん", forms:["カプセル"],
+        products:[{name:"アミティーザ",kind:"brand"}]},
+      {name:"リナクロチド", kana:"りなくろちと", forms:["錠"],
+        products:[{name:"リンゼス",kind:"brand"}]},
+      {name:"エロビキシバット", kana:"えろひきしはつと", forms:["錠"],
+        products:[{name:"グーフィス",kind:"brand"}]},
+    ]
+  },
+  {
+    id:"laxative-stimulant", name:"便秘薬：大腸刺激性", moa:"大腸蠕動刺激・水分分泌促進",
+    ingredients:[
+      {name:"センノシド", kana:"せんのしと", forms:["錠","顆粒"],
+        products:[{name:"プルゼニド",kind:"brand"},{name:"センノシド錠「各社」",kind:"ge"}]},
+      {name:"ピコスルファートナトリウム", kana:"ひこするふああと", forms:["錠","内用液"],
+        products:[{name:"ラキソベロン",kind:"brand"},{name:"ピコスルファートNa錠「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"prokinetic", name:"消化管運動改善・制吐薬", moa:"D₂遮断／5-HT₄刺激（消化管運動亢進）",
+    ingredients:[
+      {name:"メトクロプラミド", kana:"めとくろふらみと", forms:["錠","細粒","注"],
+        products:[{name:"プリンペラン",kind:"brand"},{name:"メトクロプラミド錠「各社」",kind:"ge"}]},
+      {name:"ドンペリドン", kana:"とんへりとん", forms:["錠","OD錠","坐剤","DS"],
+        products:[{name:"ナウゼリン",kind:"brand"},{name:"ドンペリドン錠「各社」",kind:"ge"}]},
+      {name:"モサプリド", kana:"もさふりと", forms:["錠","散"],
+        products:[{name:"ガスモチン",kind:"brand"},{name:"モサプリド錠「各社」",kind:"ge"}]},
+      {name:"イトプリド", kana:"いとふりと", forms:["錠"],
+        products:[{name:"ガナトン",kind:"brand"},{name:"イトプリド錠「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"triptan", name:"片頭痛：トリプタン", moa:"5-HT₁B/₁D受容体作動（頭蓋血管収縮）",
+    ingredients:[
+      {name:"スマトリプタン", kana:"すまとりふたん", forms:["錠","点鼻","注","キット"],
+        products:[{name:"イミグラン",kind:"brand"},{name:"スマトリプタン錠「各社」",kind:"ge"}]},
+      {name:"リザトリプタン", kana:"りさとりふたん", forms:["錠","OD錠"],
+        products:[{name:"マクサルト",kind:"brand"},{name:"リザトリプタンOD錠「各社」",kind:"ge"}]},
+      {name:"エレトリプタン", kana:"えれとりふたん", forms:["錠"],
+        products:[{name:"レルパックス",kind:"brand"},{name:"エレトリプタン錠「各社」",kind:"ge"}]},
+      {name:"ゾルミトリプタン", kana:"そるみとりふたん", forms:["錠","OD錠"],
+        products:[{name:"ゾーミッグ",kind:"brand"},{name:"ゾルミトリプタン錠「各社」",kind:"ge"}]},
+      {name:"ナラトリプタン", kana:"ならとりふたん", forms:["錠"],
+        products:[{name:"アマージ",kind:"brand"}]},
+    ]
+  },
+  {
+    id:"aed", name:"抗てんかん薬・気分安定薬", moa:"Na/Caチャネル・GABA・SV2A等（多様）",
+    ingredients:[
+      {name:"バルプロ酸", kana:"はるふろさん", forms:["錠","徐放錠","細粒","シロップ"],
+        products:[{name:"デパケン／セレニカR",kind:"brand"},{name:"バルプロ酸Na錠「各社」",kind:"ge"}]},
+      {name:"カルバマゼピン", kana:"かるはませひん", forms:["錠","細粒"],
+        products:[{name:"テグレトール",kind:"brand"},{name:"カルバマゼピン錠「各社」",kind:"ge"}]},
+      {name:"ラモトリギン", kana:"らもとりきん", forms:["錠"],
+        products:[{name:"ラミクタール",kind:"brand"},{name:"ラモトリギン錠「各社」",kind:"ge"}]},
+      {name:"レベチラセタム", kana:"れへちらせたむ", forms:["錠","DS","点滴"],
+        products:[{name:"イーケプラ",kind:"brand"},{name:"レベチラセタム錠「各社」",kind:"ge"}]},
+      {name:"ラコサミド", kana:"らこさみと", forms:["錠","点滴"],
+        products:[{name:"ビムパット",kind:"brand"}]},
+    ]
+  },
+  {
+    id:"antipsychotic", name:"抗精神病薬（非定型）", moa:"D₂・5-HT₂受容体遮断（SDA/MARTA等）",
+    ingredients:[
+      {name:"リスペリドン", kana:"りすへりとん", forms:["錠","OD錠","内用液","細粒"],
+        products:[{name:"リスパダール",kind:"brand"},{name:"リスペリドン錠「各社」",kind:"ge"}]},
+      {name:"オランザピン", kana:"おらんさひん", forms:["錠","OD錠","細粒"],
+        products:[{name:"ジプレキサ",kind:"brand"},{name:"オランザピン錠「各社」",kind:"ge"}]},
+      {name:"クエチアピン", kana:"くえちあひん", forms:["錠","細粒"],
+        products:[{name:"セロクエル",kind:"brand"},{name:"クエチアピン錠「各社」",kind:"ge"}]},
+      {name:"アリピプラゾール", kana:"ありひふらそおる", forms:["錠","OD錠","散","内用液"],
+        products:[{name:"エビリファイ",kind:"brand"},{name:"アリピプラゾール錠「各社」",kind:"ge"}]},
+      {name:"ブロナンセリン", kana:"ふろなんせりん", forms:["錠","散","貼付"],
+        products:[{name:"ロナセン",kind:"brand"}]},
+    ]
+  },
+  {
+    id:"dementia", name:"認知症治療薬", moa:"コリンエステラーゼ阻害／NMDA受容体拮抗",
+    ingredients:[
+      {name:"ドネペジル", kana:"とねへしる", forms:["錠","OD錠","細粒","内用ゼリー"],
+        products:[{name:"アリセプト",kind:"brand"},{name:"ドネペジル塩酸塩錠「各社」",kind:"ge"}]},
+      {name:"ガランタミン", kana:"からんたみん", forms:["錠","OD錠","内用液"],
+        products:[{name:"レミニール",kind:"brand"},{name:"ガランタミン錠「各社」",kind:"ge"}]},
+      {name:"リバスチグミン", kana:"りはすちくみん", forms:["貼付"],
+        products:[{name:"イクセロン／リバスタッチ",kind:"brand"},{name:"リバスチグミンテープ「各社」",kind:"ge"}]},
+      {name:"メマンチン", kana:"めまんちん", forms:["錠","OD錠","DS"],
+        products:[{name:"メマリー",kind:"brand"},{name:"メマンチン塩酸塩錠「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"bph-alpha", name:"前立腺肥大：α₁遮断薬", moa:"前立腺・尿道平滑筋α₁受容体遮断",
+    ingredients:[
+      {name:"タムスロシン", kana:"たむすろしん", forms:["OD錠"],
+        products:[{name:"ハルナール",kind:"brand"},{name:"タムスロシン塩酸塩OD錠「各社」",kind:"ge"}]},
+      {name:"シロドシン", kana:"しろとしん", forms:["錠","OD錠"],
+        products:[{name:"ユリーフ",kind:"brand"},{name:"シロドシン錠「各社」",kind:"ge"}]},
+      {name:"ナフトピジル", kana:"なふとひしる", forms:["錠","OD錠"],
+        products:[{name:"フリバス",kind:"brand"},{name:"ナフトピジル錠「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"bph-5ari", name:"前立腺肥大：5α還元酵素阻害薬", moa:"テストステロン→DHT変換阻害（前立腺縮小）",
+    ingredients:[
+      {name:"デュタステリド", kana:"てゆたすてりと", forms:["カプセル"],
+        products:[{name:"アボルブ",kind:"brand"},{name:"デュタステリドCp「各社」",kind:"ge"}]},
+    ]
+  },
+  {
+    id:"iron", name:"経口鉄剤", moa:"鉄補充（造血）",
+    ingredients:[
+      {name:"クエン酸第一鉄ナトリウム", kana:"くえんさんたいいちてつ", forms:["錠","顆粒"],
+        products:[{name:"フェロミア",kind:"brand"},{name:"クエン酸第一鉄Na錠「各社」",kind:"ge"}]},
+      {name:"乾燥硫酸鉄", kana:"かんそうりゆうさんてつ", forms:["徐放錠"],
+        products:[{name:"フェロ・グラデュメット",kind:"brand"}]},
+      {name:"クエン酸第二鉄水和物", kana:"くえんさんたいにてつ", forms:["錠"],
+        products:[{name:"リオナ",kind:"brand"}]},
+    ]
+  },
 ];
 
 // 各グループ内を五十音順（kana）でソート
